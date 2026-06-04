@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tómbola INNOMOTICS - PANAM</title>
+    <title>Tómbola PANAM</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
     <style>
         :root {
-            --color-principal: #fcd535; /* Amarillo de la marca */
-            --color-fondo: #0d0d0d;
-            --color-tablero: #1a1a1a;
-            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -23,64 +20,31 @@
             color: #ffffff;
             overflow: hidden;
             
-            /* Fondo personalizado con patrón halftone */
-            background-color: var(--color-fondo);
-            background-image: 
-                url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z8gAFUPhfCBUDMR//v//H8ZABQA8/R4+e8zHkQAAAABJRU5ErkJggg=='),
-                url('fondo.png'); /* Ruta a tu imagen de fondo original */
-            background-size: auto, cover;
+            /* Fondo limpio: solo tu imagen sin texturas ni overlays oscuros añadidos */
+            background-color: #0d0d0d;
+            background-image: url('fondo.png'); 
+            background-size: cover;
             background-position: center;
-            background-blend-mode: overlay;
+            background-repeat: no-repeat;
         }
 
-        /* --- Encabezado --- */
-        header {
-            text-align: center;
-            margin-top: 40px; /* Espacio superior */
-            z-index: 20;
-        }
-
-        h1#titulo-marca {
-            font-size: 72px;
-            color: var(--color-principal);
-            margin: 0;
-            line-height: 1;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            font-weight: 900;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
-        }
-
-        h2#subtitulo-evento {
-            font-size: 24px;
-            color: #ffffff;
-            margin: 10px 0 0 0;
-            font-weight: 300;
-            opacity: 0.8;
-        }
-
-        /* --- Contenedor de la Tómbola (Punto 1 y 2) --- */
+        /* --- Contenedor Principal --- */
         #main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 100px; /* ESTO BAJA LA TÓMBOLA 40% (aprox 100px) */
+            /* Ajusta este valor para subir o bajar la tómbola según dónde estén los textos en tu fondo.png */
+            margin-top: 220px; 
             position: relative;
             z-index: 10;
         }
 
+        /* El contenedor ya no tiene fondo oscuro, es 100% transparente */
         #contenedor-simulacion {
             position: relative;
-            width: 450px;
-            height: 450px;
-            /* SEGURO DE CÍRCULO COMPLETO */
-            border-radius: 50%;
-            overflow: visible; /* Importante para que no corte los bordes */
-            box-shadow: 0 0 30px rgba(252, 213, 53, 0.1); /* Brillo tenue */
-            background: radial-gradient(circle, rgba(20,20,20,0.8) 0%, rgba(10,10,10,0.9) 100%);
         }
 
-        /* --- Animación Central "Bolita Saliendo" (Punto 3) --- */
+        /* --- Animación Central --- */
         #numero-animado {
             position: absolute;
             top: 50%;
@@ -108,25 +72,26 @@
 
         @keyframes salirYEncoger {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            15% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } /* Aparece y rebota */
+            15% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
             20% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            70% { transform: translate(-50%, -50%) scale(1); opacity: 1; } /* Pausa para ver el número */
-            85% { transform: translate(-50%, 300px) scale(0.3); opacity: 0.5; } /* Baja hacia el tablero */
-            100% { transform: translate(-50%, 300px) scale(0.1); opacity: 0; } /* Desaparece */
+            70% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            85% { transform: translate(-50%, 300px) scale(0.3); opacity: 0.5; }
+            100% { transform: translate(-50%, 300px) scale(0.1); opacity: 0; }
         }
 
-        /* --- Tablero de Números Anunciados (Armónico) --- */
+        /* --- Tablero --- */
         #tablero {
-            margin-top: 30px;
+            margin-top: 10px;
             display: grid;
-            grid-template-columns: repeat(10, 1fr); /* 10 por fila */
+            grid-template-columns: repeat(10, 1fr);
             gap: 12px;
-            background: var(--color-tablero);
+            /* Fondo del tablero sutilmente transparente para integrar mejor el diseño */
+            background: rgba(26, 26, 26, 0.7); 
             padding: 20px;
             border-radius: 12px;
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
-            border: 1px solid rgba(252, 213, 53, 0.1);
-            min-height: 120px; /* Altura para 2 filas */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 50px;
             width: 700px;
         }
 
@@ -142,7 +107,7 @@
             font-weight: bold;
             box-shadow: inset -3px -3px 5px rgba(0,0,0,0.4), 1px 2px 3px rgba(0,0,0,0.3);
             transform: scale(0);
-            animation: popInBolita 0.4s 2.2s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Retraso para que baje la animacion central */
+            animation: popInBolita 0.4s 2.2s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -154,18 +119,13 @@
             position: fixed;
             bottom: 20px;
             font-size: 1.5em;
-            color: var(--color-principal);
+            color: #fcd535;
             font-weight: bold;
             z-index: 100;
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1 id="titulo-marca">INNOMOTICS</h1>
-        <h2 id="subtitulo-evento">Tómbola PANAM</h2>
-    </header>
 
     <div id="main-container">
         <div id="numero-animado">00</div>
@@ -179,49 +139,53 @@
         // --- Configuración y Módulos ---
         const contenedor = document.getElementById('contenedor-simulacion');
         const numeroAnimadoEl = document.getElementById('numero-animado');
-        const diametroTombola = 450;
-        const radioBolita = 18; // Ligeramente más pequeñas
+        
+        // Canvas más grande que la tómbola para evitar que se corten los bordes
+        const tamanoCanvas = 500; 
+        const diametroTombola = 420; 
+        const centro = tamanoCanvas / 2;
+        const radioTombola = diametroTombola / 2;
+        const radioBolita = 18;
         const VELOCIDAD_CONSTANTE = 6.5;
 
         const { Engine, Render, Runner, World, Bodies, Body, Events, Vector } = Matter;
 
         const engine = Engine.create();
         const world = engine.world;
-        world.gravity.y = 0; // Sin gravedad, las bolitas flotan
+        world.gravity.y = 0; 
 
         const render = Render.create({
             element: contenedor,
             engine: engine,
             options: {
-                width: diametroTombola,
-                height: diametroTombola,
+                width: tamanoCanvas,
+                height: tamanoCanvas,
                 wireframes: false,
-                background: 'transparent'
+                background: 'transparent' // Totalmente transparente
             }
         });
 
-        // --- Crear el Anillo de la Tómbola (Estático) ---
-        const radioTombola = diametroTombola / 2;
-        const numParedes = 80; // Más paredes para un círculo más perfecto
+        // --- Crear el Anillo de la Tómbola ---
+        const numParedes = 90; // Mayor cantidad de polígonos para un círculo visualmente suave
         const espesorPared = 20;
 
         for (let i = 0; i < numParedes; i++) {
             const angle = (i / numParedes) * Math.PI * 2;
-            const x = radioTombola + (radioTombola - 5) * Math.cos(angle);
-            const y = radioTombola + (radioTombola - 5) * Math.sin(angle);
+            const x = centro + radioTombola * Math.cos(angle);
+            const y = centro + radioTombola * Math.sin(angle);
             
-            const pared = Bodies.rectangle(x, y, 60, espesorPared, {
+            const pared = Bodies.rectangle(x, y, 40, espesorPared, {
                 isStatic: true,
                 angle: angle,
-                render: { fillStyle: '#1a1a1a' },
+                render: { fillStyle: '#262626' }, // Color del anillo
                 friction: 0,
-                restitution: 1, // Rebote perfecto
-                collisionFilter: { group: -1 } // Evitar colisiones entre las paredes mismas
+                restitution: 1,
+                collisionFilter: { group: -1 } 
             });
             World.add(world, pared);
         }
 
-        // --- Crear las 20 Bolitas (Físicas) ---
+        // --- Crear las 20 Bolitas ---
         const bolitasEnSimulacion = [];
         const coloresValidos = [
             '#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', 
@@ -231,8 +195,8 @@
         for (let i = 1; i <= 20; i++) {
             const color = coloresValidos[i % coloresValidos.length];
             const bolita = Bodies.circle(
-                radioTombola + (Math.random() - 0.5) * 200,
-                radioTombola + (Math.random() - 0.5) * 200,
+                centro + (Math.random() - 0.5) * 150,
+                centro + (Math.random() - 0.5) * 150,
                 radioBolita,
                 {
                     restitution: 1,
@@ -246,7 +210,6 @@
                     label: i.toString()
                 }
             );
-            // Velocidad inicial aleatoria
             Body.setVelocity(bolita, { 
                 x: (Math.random() - 0.5) * VELOCIDAD_CONSTANTE * 2, 
                 y: (Math.random() - 0.5) * VELOCIDAD_CONSTANTE * 2 
@@ -255,7 +218,6 @@
         }
         World.add(world, bolitasEnSimulacion);
 
-        // Mantener la velocidad constante (afterUpdate)
         Events.on(engine, 'afterUpdate', () => {
             bolitasEnSimulacion.forEach(bolita => {
                 const velocidadActual = Vector.magnitude(bolita.velocity);
@@ -265,8 +227,7 @@
             });
         });
 
-        // --- Lógica del Sorteo (Punto 3) ---
-        const bolitasSeleccionadas = [];
+        // --- Lógica del Sorteo ---
         const tablero = document.getElementById('tablero');
         const mensajeFinal = document.getElementById('mensajeFinal');
         let sorteoEnCurso = false;
@@ -286,31 +247,23 @@
             const numeroGanador = parseInt(bolitaGanadora.label, 10);
             const colorGanador = bolitaGanadora.render.fillStyle;
 
-            // 1. Quitar la bolita física inmediatamente
             World.remove(world, bolitaGanadora);
             bolitasEnSimulacion.splice(indiceAleatorio, 1);
             
-            // 2. Iniciar la animación central (salir de la tómbola)
             numeroAnimadoEl.textContent = numeroGanador;
-            numeroAnimadoEl.style.backgroundColor = colorGanador; // La bolita que sale tiene su color
-            numeroAnimadoEl.style.color = (parseInt(colorGanador.replace('#',''), 16) > 0xffffff/2) ? 'black' : 'white'; // Contraste
+            numeroAnimadoEl.style.backgroundColor = colorGanador;
+            numeroAnimadoEl.style.color = (parseInt(colorGanador.replace('#',''), 16) > 0xffffff/2) ? 'black' : 'white';
             numeroAnimadoEl.classList.add('animar');
 
-            // 3. Crear el elemento del tablero (invisible hasta que baje)
             const bolitaTablero = document.createElement('div');
             bolitaTablero.classList.add('bolita-tablero');
             bolitaTablero.style.backgroundColor = colorGanador;
             bolitaTablero.textContent = numeroGanador;
-            bolitaTablero.dataset.numero = numeroGanador; // Para ordenar luego
+            bolitaTablero.dataset.numero = numeroGanador;
 
-            // 4. Escuchar a que la animación central de "bajado" termine
             numeroAnimadoEl.addEventListener('animationend', (e) => {
-                // Solo reaccionar cuando termine la animación salirYEncoger completa
                 if (e.animationName === 'salirYEncoger') {
-                    // Limpiar animación central
                     numeroAnimadoEl.classList.remove('animar');
-                    
-                    // Añadir la bolita al tablero y ordenarlo
                     anunciarEnTablero(bolitaTablero);
                     sorteoEnCurso = false;
                 }
@@ -318,19 +271,13 @@
         }
 
         function anunciarEnTablero(nuevaBolita) {
-            // Añadir al tablero
             tablero.appendChild(nuevaBolita);
-            
-            // Obtener todas las bolitas y ordenarlas numéricamente
             const bolitasArr = Array.from(tablero.querySelectorAll('.bolita-tablero'));
             bolitasArr.sort((a, b) => parseInt(a.dataset.numero) - parseInt(b.dataset.numero));
-            
-            // Re-añadir en orden
             tablero.innerHTML = '';
             bolitasArr.forEach(b => tablero.appendChild(b));
         }
 
-        // --- Iniciar la Simulación y Controles ---
         Render.run(render);
         const runner = Runner.create();
         Runner.run(runner, engine);
